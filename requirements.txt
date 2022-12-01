@@ -13,7 +13,11 @@ nbresult
 pygeohash
 yapf
 python-dotenv
+<<<<<<< HEAD
 audio-recorder-streamlit
+=======
+audio_recorder_streamlit
+>>>>>>> 514614a4876bae277859ec26757c361cbfb300a7
 
 librosa==0.9.2
 tensorflow==2.10.0
