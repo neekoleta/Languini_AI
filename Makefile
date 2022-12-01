@@ -21,7 +21,7 @@ install_requirements:
 # ----------------------------------
 
 streamlit:
-	-@streamlit run app.py
+	-@streamlit run streamlit_app.py --server.address localhost --server.port 4001
 
 
 # ----------------------------------
