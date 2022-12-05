@@ -7,7 +7,7 @@ from librosa.feature import melspectrogram
 import matplotlib.pyplot as plt
 import requests
 import json
-from PIL import Image
+#from PIL import Image
 #from scipy.io import wavfile
 #import soundfile as sf
 #from scipy import signal
@@ -19,10 +19,10 @@ st.markdown('<style>.block-container { padding-top: 20px } h2#languini-ai { colo
 st.header('Languini_AI')
 
 # Nice centered image
-_, image_col, _ = st.columns(3)
-img = Image.open('./img1.jpg')
-with image_col:
-    st.image(img, width=220)
+#_, image_col, _ = st.columns(3)
+#img = Image.open('./img1.jpg')
+#with image_col:
+#    st.image(img, width=220)
 
 # App Description
 st.markdown('''
@@ -58,6 +58,6 @@ if audio_bytes:
     # Demo functionality showing how to send the audio bytes as a "file"
     # in a POST request, and how to extract data from the response.
     #if st.button('Send Audio Data'):
-    #   res = requests.post('http://192.168.1.126:8080/pic', files={ 'audio': audio_bytes })
+    #   res = requests.post('http://192.168.1.126:8080/pic', files={ 'audio': audio_bytes, 'word' : word })
     #    parsed_res_body = json.loads(res.text)
     #   st.markdown(parsed_res_body["hello"])
