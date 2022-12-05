@@ -5,7 +5,6 @@ import io
 import librosa.display
 from librosa.feature import melspectrogram
 import matplotlib.pyplot as plt
-import st.audio
 import requests
 import json
 #from PIL import Image
@@ -34,11 +33,11 @@ st.markdown('''
 st.markdown('<h3 style="text-align: center;">Get Started</h3>', unsafe_allow_html=True)
 
 # Center the audio recorder (this collapses to the left if screen too small though)
-_, audio_recorder_col, _ = st.columns(3)
-with audio_recorder_col:
-    audio_bytes = audio_recorder()
+#_, audio_recorder_col, _ = st.columns(3)
+#with audio_recorder_col:
+audio_bytes = audio_recorder()
 
-# audio_bytes will be set once audio_recorder finished recording audio
+    # audio_bytes will be set once audio_recorder finished recording audio
 if audio_bytes:
     # Display the audio player
     st.audio(audio_bytes, format="audio/wav")
