@@ -57,7 +57,7 @@ if audio_bytes:
 
     # Demo functionality showing how to send the audio bytes as a "file"
     # in a POST request, and how to extract data from the response.
-    if st.button('Send Audio Data'):
-        res = requests.post('http://192.168.1.126:8080/pic', files={ 'audio': audio_bytes })
-        parsed_res_body = json.loads(res.text)
-        st.markdown(parsed_res_body["hello"])
+    #if st.button('Send Audio Data'):
+    #   res = requests.post('http://192.168.1.126:8080/pic', files={ 'audio': audio_bytes })
+    #    parsed_res_body = json.loads(res.text)
+    #   st.markdown(parsed_res_body["hello"])
