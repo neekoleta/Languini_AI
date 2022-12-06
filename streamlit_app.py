@@ -7,10 +7,14 @@ from librosa.feature import melspectrogram
 import matplotlib.pyplot as plt
 import requests
 import json
-#from PIL import Image
-#from scipy.io import wavfile
-#import soundfile as sf
-#from scipy import signal
+from PIL import Image
+
+
+# Load available words
+f = open('words_paths.json')
+
+# Add words to a list
+word_array=np.array([' ', *list(json.load(f).keys())], dtype=str)
 
 # Global styles
 st.markdown('<style>.block-container { padding-top: 20px } h2#languini-ai { color: coral; text-align: center; padding-bottom: 0 }</style>', unsafe_allow_html=True)
@@ -19,10 +23,10 @@ st.markdown('<style>.block-container { padding-top: 20px } h2#languini-ai { colo
 st.header('Languini_AI')
 
 # Nice centered image
-#_, image_col, _ = st.columns(3)
-#img = Image.open('./img1.jpg')
-#with image_col:
-#    st.image(img, width=220)
+_, image_col, _= st.columns(3)
+img = Image.open('./img1.jpg')
+with image_col:
+    st.image(img, width=220)
 
 # App Description
 st.markdown('''
@@ -31,33 +35,49 @@ st.markdown('''
 
 # Getting Started
 st.markdown('<h3 style="text-align: center;">Get Started</h3>', unsafe_allow_html=True)
-
+word=st.selectbox(label='<h4 style="text-align: center;">Type in the word you want to learn</h4>',options=word_array,key='test')
 # Center the audio recorder (this collapses to the left if screen too small though)
-#_, audio_recorder_col, _ = st.columns(3)
-#with audio_recorder_col:
-audio_bytes = audio_recorder()
 
+if word != ' ':
+
+# Returns an audio example of the word correctly pronounced
+    _, audio_recorder_col, _ = st.columns(3)
+    with audio_recorder_col:
+        audio_bytes = audio_recorder()
     # audio_bytes will be set once audio_recorder finished recording audio
-if audio_bytes:
-    # Display the audio player
-    st.audio(audio_bytes, format="audio/wav")
-    # Convert the raw audio byte array to numpy n-dimensional array
-    # of the audio power, and also the sample rate.
-    y, sr = librosa.load(io.BytesIO(audio_bytes))[0], 44100
-    # Calculate melspectrogram data of the audio (frequency intensity against time)
-    S = melspectrogram(y=y, sr=sr)
-    # Normalize raw spectrogram data to decibels, making it more presentable.
-    S_dB = librosa.power_to_db(S, ref=np.max)
 
-    plt.figure()
-    librosa.display.specshow(S_dB)
+        if audio_bytes:
+            # Display the audio player
+            st.audio(audio_bytes, format="audio/wav")
 
-    st.pyplot(plt)
-    st.download_button('Download Audio',audio_bytes,'test.wav')
+            st.download_button('Download Audio',audio_bytes,'test.wav')
 
-    # Demo functionality showing how to send the audio bytes as a "file"
-    # in a POST request, and how to extract data from the response.
-    #if st.button('Send Audio Data'):
-    #   res = requests.post('http://192.168.1.126:8080/pic', files={ 'audio': audio_bytes, 'word' : word })
-    #    parsed_res_body = json.loads(res.text)
-    #   st.markdown(parsed_res_body["hello"])
+        if st.button('Send Data'):
+            params = {
+                'word' : word
+                , 'user' : 'zac'
+            }
+            #https://languiniai-api-okwty2epfq-ew.a.run.app
+            res = requests.post(f'http://10.80.104.18:8000/get_example', params=params, headers = { 'accept': 'application/json' })
+            st.audio(res.content, format='audio/mp3')
+
+            # Demo functionality showing how to send the audio bytes as a "file"
+            # in a POST request, and how to extract data from the response.
+        if st.button('Send Audio Data'):
+            params = {
+                'word' : 'again'
+                , 'user' : 'zac'
+            }
+            res = requests.post(f'http://10.80.104.18:8000/get_result', params=params, files={'file': audio_bytes }, headers = { 'accept': 'application/json' },timeout=15 )
+            parsed_res_body = json.loads(res.text)
+            st.markdown(parsed_res_body['user'])
+
+        # if st.button('Send Audio Data'):
+        #     params = {
+        #         'word' : 'cat'
+        #         , 'user' : 'zach'
+        #     }
+        #     #https://languiniai-api-okwty2epfq-ew.a.run.app
+        #     res = requests.post(f'https://languiniai-api-okwty2epfq-ew.a.run.app/receive_audio', params=params, files={ 'file': audio_bytes }, headers = { 'accept': 'application/json' })
+
+        #     st.audio(res.content, format='audio/mp3')
