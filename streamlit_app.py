@@ -66,8 +66,8 @@ if word != ' ':
             if st.button('Send Audio Data'):
                 params = {
                     'word' : word
-                    , 'user' : 'niko'
+                    , 'user' : 'nikol'
                 }
                 res = requests.post('https://languiniai-api-okwty2epfq-ew.a.run.app/get_result', params=params, files={'file': audio_bytes }, headers = { 'accept': 'application/json' },timeout=15 )
                 parsed_res_body = json.loads(res.text)
-                st.markdown(parsed_res_body['dates'])
+                st.markdown(parsed_res_body['scores'])
