@@ -9,7 +9,6 @@ import requests
 import json
 from PIL import Image
 import time
-from streamlit_extras.switch_page_button import switch_page
 
 @st.cache
 def get_example_response(word: str, user: str):
