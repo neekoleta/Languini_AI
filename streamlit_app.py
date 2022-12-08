@@ -18,6 +18,7 @@ def get_example_response(word: str, user: str):
     }
     return requests.post('https://languiniai-api-okwty2epfq-ew.a.run.app/get_example', params=params, headers = { 'accept': 'application/json' })
 
+#'https://languiniai-api-okwty2epfq-ew.a.run.app/
 def get_word_score(score:float,top:float,bottom:float)->str:
     '''
     gets the score from the latest attempt (user), and compares it to
@@ -40,6 +41,25 @@ def get_word_score(score:float,top:float,bottom:float)->str:
     if local_score<1: local_score=1
     if score>top: local_score=5
     return word_scores.get(round(local_score),0)
+min=0.98
+max=1
+def plotter(scorelst):
+    #plt.figure(figsize=(8, 4))
+    attempts = range(len(scorelst))
+    if len(attempts) <= 3:
+        plt.bar(attempts,scorelst)
+        plt.ylim([min, max])
+    elif len(attempts) >=4 and len(attempts) <=10:
+        plt.plot(attempts,scorelst, c='r')
+        plt.ylim([min, max])
+    else:
+        plt.plot(attempts[-10:],scorelst[-10:])
+        plt.ylim([min, max])
+
+    plt.xlabel("attempts")
+    plt.ylabel("Score")
+    plt.title(f"{user}'s score")
+    plt.show()
 
 start_get_example = 0
 end_get_example= 0
@@ -108,9 +128,9 @@ if user:
                         top_score=parsed_res_body['good'][0]
                         bottom_score=parsed_res_body['bad'][0]
                         word_result=get_word_score(score[-1],top_score,bottom_score)
-                        st.markdown(score[-1])
-                        st.markdown(bottom_score)
-                        st.markdown(top_score)
+                        #st.markdown(score[-1])
+                        #st.markdown(bottom_score)
+                        #st.markdown(top_score)
                         if len(score)>1:
                             previous_score=get_word_score(score[-2],top_score,bottom_score)
                             with st.sidebar:
@@ -118,6 +138,12 @@ if user:
                                 st.markdown(f'<h3 style="font-size=15px;text-align: center; color: #240046;"> previous attempt:</h3>',unsafe_allow_html=True)
                                 st.markdown( f'<h3 style="font-size=20px;text-align: center; color: #240046;"> {previous_score}</h3 >',unsafe_allow_html=True)
                                 st.markdown('<div style="height: 100px;"></div>', unsafe_allow_html=True)
-                                st.markdown('go to the graph section to view your performance')
-                        st.markdown(f'<h3 style="color:#5A189A;text-align: center;font-size:30px;">{word_result}</h3>',unsafe_allow_html=True)
+                                #st.markdown('go to the graph section to view your performance')
+                       # st.markdown(f'<h3 style="color:#5A189A;text-align: center;font-size:30px;">{word_result}</h3>',unsafe_allow_html=True)
                         end_get_response = time.time()
+
+                fig, ax = plt.subplots()
+                fig.set_figwidth(8)
+                fig.set_figheight(4)
+                plotter(score)
+                st.pyplot( fig )
