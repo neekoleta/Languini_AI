@@ -9,6 +9,7 @@ import requests
 import json
 from PIL import Image
 import time
+from streamlit_extras.switch_page_button import switch_page
 
 @st.cache
 def get_example_response(word: str, user: str):
@@ -54,7 +55,7 @@ word_array=np.array([' ', *list(json.load(f).keys())], dtype=str)
 with st.sidebar:
     # App header
     st.markdown('<h1 style="color: #FF6D00; padding-top:0; text-align: center; padding-bottom: 300; font-size: 50px">Languini_AI</h1>',unsafe_allow_html=True)
-    st.markdown('<div style="height: 200px;"></div>', unsafe_allow_html=True)
+    st.markdown('<div style="height: 100px;"></div>', unsafe_allow_html=True)
 
 # Getting Started
 user= st.sidebar.text_input('username')
@@ -68,7 +69,9 @@ if user:
     # Center the audio recorder (this collapses to the left if screen too small though)
     st.markdown('<div style="height: 20px;"></div>', unsafe_allow_html=True)
     if word != ' ':
-        with st.spinner("![Alt Text](http://www.rob-wtd.co.uk/rob/wp-content/uploads/2014/07/FOX_WALK_alpha.gif) spinner1"):
+        with st.sidebar:
+            st.markdown(f'<h1 style="color:#240046;font-size: 20px;">Your word: {word}</h1>',unsafe_allow_html=True)
+        with st.spinner("![Alt Text](http://www.rob-wtd.co.uk/rob/wp-content/uploads/2014/07/FOX_WALK_alpha.gif)  computer is thinking please wait :robot_face:"):
             start_get_example = time.time()
 
             get_example_res = get_example_response(word,user)
@@ -81,20 +84,20 @@ if user:
     # Returns an audio example of the word correctly pronounced
         if get_example_res:
             st.markdown('<div style="height: 60px;"></div>', unsafe_allow_html=True)
-            st.markdown(f'<h5 style="text-align: center;color:#5A189A;font-size: 30px";>Your turn! Press the recorder and say "{word}".</h5>',unsafe_allow_html=True)
-            st.markdown('<div style="height: 40px;"></div>', unsafe_allow_html=True)
+            st.markdown(f'<h5 style="text-align: center;color:#240046;font-size: 25px";>Your turn! Press the recorder and say "{word}".</h5>',unsafe_allow_html=True)
+            st.markdown('<div style="height: 0px;"></div>', unsafe_allow_html=True)
             col1,col2,col3=st.columns(3)
             with col2:
                 audio_bytes = audio_recorder()
                 st.markdown('<div style="height: 0px;"></div>', unsafe_allow_html=True)
             if audio_bytes:
             # Display the audio player
-                st.audio(audio_bytes, format="audio/wav")
+                # st.audio(audio_bytes, format="audio/wav")
         # audio_bytes will be set once audio_recorder finished recording audio
                 # Demo functionality showing how to send the audio bytes as a "file"
                 # in a POST request, and how to extract data from the response.
-
-                with st.spinner("![Alt Text](http://www.rob-wtd.co.uk/rob/wp-content/uploads/2014/07/FOX_WALK_alpha.gif) doing things"):
+#online api 'https://languiniai-api-okwty2epfq-ew.a.run.app/get_result'
+                with st.spinner("![Alt Text](http://www.rob-wtd.co.uk/rob/wp-content/uploads/2014/07/FOX_WALK_alpha.gif) computer is thinking please wait :robot_face:"):
                         start_get_response = time.time()
                         params = {
                             'word' : word
@@ -102,12 +105,20 @@ if user:
                         }
                         res = requests.post('https://languiniai-api-okwty2epfq-ew.a.run.app/get_result', params=params, files={'file': audio_bytes }, headers = { 'accept': 'application/json' })
                         parsed_res_body = json.loads(res.text)
-                        score=parsed_res_body['scores'][-1]
+                        score=parsed_res_body['scores']
                         top_score=parsed_res_body['good'][0]
                         bottom_score=parsed_res_body['bad'][0]
-                        word_result=get_word_score(score,top_score,bottom_score)
-                        st.markdown(score)
-                        st.markdown(top_score)
+                        word_result=get_word_score(score[-1],top_score,bottom_score)
+                        st.markdown(score[-1])
                         st.markdown(bottom_score)
-                        st.markdown(word_result)
+                        st.markdown(top_score)
+                        if len(score)>1:
+                            previous_score=get_word_score(score[-2],top_score,bottom_score)
+                            with st.sidebar:
+                                st.markdown('<div style="height: 100px;"></div>', unsafe_allow_html=True)
+                                st.markdown(f'<h3 style="font-size=15px;text-align: center; color: #240046;"> previous attempt:</h3>',unsafe_allow_html=True)
+                                st.markdown( f'<h3 style="font-size=20px;text-align: center; color: #240046;"> {previous_score}</h3 >',unsafe_allow_html=True)
+                                st.markdown('<div style="height: 100px;"></div>', unsafe_allow_html=True)
+                                st.markdown('go to the graph section to view your performance')
+                        st.markdown(f'<h3 style="color:#5A189A;text-align: center;font-size:30px;">{word_result}</h3>',unsafe_allow_html=True)
                         end_get_response = time.time()
