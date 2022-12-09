@@ -48,7 +48,7 @@ def plotter(scorelst):
     attempts = range(len(scorelst))
     if len(attempts) <= 3:
         plt.bar(attempts,scorelst)
-        plt.ylim([min, max])
+        plt.ylim([0.9875, max])
     elif len(attempts) >=4 and len(attempts) <=10:
         plt.plot(attempts,scorelst, c='r')
         plt.ylim([min, max])
@@ -131,13 +131,13 @@ if user:
                         #st.markdown(score[-1])
                         #st.markdown(bottom_score)
                         #st.markdown(top_score)
-                        if len(score)>1:
-                            previous_score=get_word_score(score[-2],top_score,bottom_score)
-                            with st.sidebar:
-                                st.markdown('<div style="height: 100px;"></div>', unsafe_allow_html=True)
-                                st.markdown(f'<h3 style="font-size=15px;text-align: center; color: #240046;"> previous attempt:</h3>',unsafe_allow_html=True)
-                                st.markdown( f'<h3 style="font-size=20px;text-align: center; color: #240046;"> {previous_score}</h3 >',unsafe_allow_html=True)
-                                st.markdown('<div style="height: 100px;"></div>', unsafe_allow_html=True)
+                        # if len(score)>1:
+                        #     previous_score=get_word_score(score[-2],top_score,bottom_score)
+                        #     with st.sidebar:
+                        #         st.markdown('<div style="height: 100px;"></div>', unsafe_allow_html=True)
+                        #         #st.markdown(f'<h3 style="font-size=15px;text-align: center; color: #240046;"> previous attempt:</h3>',unsafe_allow_html=True)
+                                #st.markdown( f'<h3 style="font-size=20px;text-align: center; color: #240046;"> {previous_score}</h3 >',unsafe_allow_html=True)
+                                # st.markdown('<div style="height: 100px;"></div>', unsafe_allow_html=True)
                                 #st.markdown('go to the graph section to view your performance')
                        # st.markdown(f'<h3 style="color:#5A189A;text-align: center;font-size:30px;">{word_result}</h3>',unsafe_allow_html=True)
                         end_get_response = time.time()
